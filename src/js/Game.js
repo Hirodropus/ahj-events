@@ -13,7 +13,7 @@ export default class Game {
     this.score = new Score(maxMisses);
     this.intervalId = null;
     this.isRunning = false;
-    this.lastCell = null;
+    this.lastCellIndex = null; // храним ИНДЕКС последней ячейки
     this.infoElement = this.createInfoPanel();
     this.handleCellClick = this.handleCellClick.bind(this);
     this.attachClickListeners();
@@ -67,13 +67,14 @@ export default class Game {
       }
     }
 
-     let newCell;
+    let newIndex;
     do {
-      newCell = this.board.getRandomCell();
-    } while (newCell === this.lastCell);
+      newIndex = Math.floor(Math.random() * this.board.cells.length);
+    } while (newIndex === this.lastCellIndex);
 
+    const newCell = this.board.cells[newIndex];
     this.goblin.place(newCell);
-    this.lastCell = newCell;
+    this.lastCellIndex = newIndex;
     this.updateInfo();
   }
 
@@ -84,7 +85,7 @@ export default class Game {
     }
     this.score.reset();
     this.goblin.remove();
-    this.lastCell = null;
+    this.lastCellIndex = null;
     this.isRunning = true;
     this.updateInfo();
     this.showGoblin();
