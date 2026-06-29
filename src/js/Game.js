@@ -13,6 +13,7 @@ export default class Game {
     this.score = new Score(maxMisses);
     this.intervalId = null;
     this.isRunning = false;
+    this.lastCell = null;
     this.infoElement = this.createInfoPanel();
     this.handleCellClick = this.handleCellClick.bind(this);
     this.attachClickListeners();
@@ -54,7 +55,7 @@ export default class Game {
   showGoblin() {
     if (this.score.gameOver) return;
 
-
+    // Если гоблин уже есть – это пропуск
     if (this.goblin.isPlaced()) {
       this.score.addMiss();
       this.goblin.remove();
@@ -66,13 +67,13 @@ export default class Game {
       }
     }
 
-
-    let newCell;
+     let newCell;
     do {
       newCell = this.board.getRandomCell();
-    } while (this.goblin.currentCell === newCell);
+    } while (newCell === this.lastCell);
 
     this.goblin.place(newCell);
+    this.lastCell = newCell;
     this.updateInfo();
   }
 
@@ -83,6 +84,7 @@ export default class Game {
     }
     this.score.reset();
     this.goblin.remove();
+    this.lastCell = null;
     this.isRunning = true;
     this.updateInfo();
     this.showGoblin();
