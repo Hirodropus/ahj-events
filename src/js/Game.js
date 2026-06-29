@@ -2,10 +2,13 @@ import Board from './Board';
 import Goblin from './Goblin';
 import Score from './Score';
 
+const FIELD_SIZE = 4;
+const INTERVAL_MS = 1000;
+
 export default class Game {
   constructor(container, goblinImg, maxMisses = 5) {
     this.container = container;
-    this.board = new Board(4, container);
+    this.board = new Board(FIELD_SIZE, container);
     this.goblin = new Goblin(goblinImg);
     this.score = new Score(maxMisses);
     this.intervalId = null;
@@ -50,18 +53,26 @@ export default class Game {
 
   showGoblin() {
     if (this.score.gameOver) return;
+
+
     if (this.goblin.isPlaced()) {
       this.score.addMiss();
       this.goblin.remove();
       this.updateInfo();
       if (this.score.gameOver) {
         this.stopGame();
-        alert('Игра окончена! Вы промазали 5 раз.');
+        alert('Игра окончена! Вы пропустили 5 раз.');
         return;
       }
     }
-    const cell = this.board.getRandomCell();
-    this.goblin.place(cell);
+
+
+    let newCell;
+    do {
+      newCell = this.board.getRandomCell();
+    } while (this.goblin.currentCell === newCell);
+
+    this.goblin.place(newCell);
     this.updateInfo();
   }
 
@@ -75,7 +86,7 @@ export default class Game {
     this.isRunning = true;
     this.updateInfo();
     this.showGoblin();
-    this.intervalId = setInterval(() => this.showGoblin(), 1000);
+    this.intervalId = setInterval(() => this.showGoblin(), INTERVAL_MS);
   }
 
   stopGame() {

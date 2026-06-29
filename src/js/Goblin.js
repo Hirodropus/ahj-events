@@ -8,7 +8,7 @@ export default class Goblin {
 
   place(cell) {
     if (this.currentCell) {
-      this.currentCell.removeChild(this.element);
+      this.currentCell.remove();
     }
     cell.append(this.element);
     this.currentCell = cell;
@@ -16,7 +16,7 @@ export default class Goblin {
 
   remove() {
     if (this.currentCell) {
-      this.currentCell.removeChild(this.element);
+      this.currentCell.remove();
       this.currentCell = null;
     }
   }
